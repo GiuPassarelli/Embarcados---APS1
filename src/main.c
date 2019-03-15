@@ -1,6 +1,7 @@
 /** 
  ** Entrega realizada por:
  **  - Giulia Passarelli
+ **  - Alessandra Blucher
  ** 
  **  - url vídeo
  **/
@@ -14,42 +15,6 @@
 /************************************************************************/
 /* defines                                                              */
 /************************************************************************/
-
-#define BUZZER_PIO           PIOA
-#define BUZZER_PIO_ID        ID_PIOA
-#define BUZZER_PIO_IDX       4u
-#define BUZZER_PIO_IDX_MASK  (1u << BUZZER_PIO_IDX)
-
-#define PAUSE_PIO           PIOA
-#define PAUSE_PIO_ID        10
-#define PAUSE_PIO_IDX       3u
-#define PAUSE_PIO_IDX_MASK  (1u << PAUSE_PIO_IDX)
-
-void init(void);
-
-// Função de inicialização do uC
-void init(void){
-	// Initialize the board clock
-	sysclk_init();
-	
-	// Desativa WatchDog Timer
-	WDT->WDT_MR = WDT_MR_WDDIS;
-	
-	// Ativa o PIO na qual o BUZZER foi conectado
-	// para que possamos controlar o BUZZER.
-	pmc_enable_periph_clk(BUZZER_PIO_ID);
-	
-	// Ativa o PIO na qual o PAUSE foi conectado
-	// para que possamos controlar o BUZZER.
-	//pmc_enable_periph_clk(PAUSE_PIO_ID);
-	
-	//Inicializa PA4 como saída
-	pio_set_output(BUZZER_PIO, BUZZER_PIO_IDX_MASK, 0, 0, 0);
-	
-	//Inicializa PA3 como saída
-	pio_set_input(PAUSE_PIO, PAUSE_PIO_IDX_MASK, PIO_PULLUP);
-	pio_pull_up(PAUSE_PIO, PAUSE_PIO_IDX_MASK, 1);
-}
 
 const int songspeed = 1.5; //Change to 2 for a slower version of the song, the bigger the number the slower the song
 //*****************************************
@@ -142,6 +107,25 @@ const int songspeed = 1.5; //Change to 2 for a slower version of the song, the b
 #define NOTE_CS8 4435
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
+#define c  261
+#define d  294
+#define e  329
+#define f  349
+#define g  391
+#define gS  415
+#define a  440
+#define aS  455
+#define b  466
+#define cH  523
+#define cSH  554
+#define dH  587
+#define dSH  622
+#define eH  659
+#define fH  698
+#define fSH  740
+#define gH  784
+#define gSH  830
+#define aH  880
 //*****************************************
 int melody[] = {
 	NOTE_E7, NOTE_E7, 0, NOTE_E7,
@@ -197,6 +181,77 @@ int tempo[] = {
 	12, 12, 12, 12,
 };
 
+//marcha imperial
+int imperial_melody[] = {
+	a,a,a,f,cH,a,f,cH,a,0,eH,eH,eH,fH,cH,gS,f,cH,a,0
+};
+
+int imperial_tempo[] = {
+	500,500,500,350,150,500,350,150,650,500,500,500,500,350,150,500,350,150,650,500
+};
+
+#define BUZZER_PIO           PIOA
+#define BUZZER_PIO_ID        ID_PIOA
+#define BUZZER_PIO_IDX       4u
+#define BUZZER_PIO_IDX_MASK  (1u << BUZZER_PIO_IDX)
+
+#define PAUSE_PIO           PIOA
+#define PAUSE_PIO_ID        ID_PIOA
+#define PAUSE_PIO_IDX       3u
+#define PAUSE_PIO_IDX_MASK  (1u << PAUSE_PIO_IDX)
+
+#define CHANGE_PIO           PIOA
+#define CHANGE_PIO_ID        ID_PIOA
+#define CHANGE_PIO_IDX       19u
+#define CHANGE_PIO_IDX_MASK  (1u << CHANGE_PIO_IDX)
+
+#define	GREEN_PIO            PIOA
+#define GREEN_PIO_ID         ID_PIOA
+#define GREEN_PIO_IDX        0u
+#define GREEN_PIO_IDX_MASK   (1u << GREEN_PIO_IDX)
+
+#define	BLUE_PIO           PIOB
+#define BLUE_PIO_ID        ID_PIOB
+#define BLUE_PIO_IDX       1u
+#define BLUE_PIO_IDX_MASK  (1u << BLUE_PIO_IDX)
+
+
+void init(void);
+
+// Função de inicialização do uC
+void init(void){
+	// Initialize the board clock
+	sysclk_init();
+	
+	// Desativa WatchDog Timer
+	WDT->WDT_MR = WDT_MR_WDDIS;
+	
+	// Ativa o PIO na qual o BUZZER foi conectado
+	// para que possamos controlar o BUZZER.
+	pmc_enable_periph_clk(BUZZER_PIO_ID);
+	
+	// Ativa o PIO na qual o BLUE foi conectado
+	// para que possamos controlar o BUZZER.
+	pmc_enable_periph_clk(BLUE_PIO_ID);
+	
+	//Inicializa PA4 como saída
+	pio_set_output(BUZZER_PIO, BUZZER_PIO_IDX_MASK, 0, 0, 0);
+	
+	//Inicializa PAUSE como saída
+	pio_set_input(PAUSE_PIO, PAUSE_PIO_IDX_MASK, PIO_PULLUP);
+	pio_pull_up(PAUSE_PIO, PAUSE_PIO_IDX_MASK, 1);
+	
+	//Inicializa CHANGE como saída
+	pio_set_input(CHANGE_PIO, CHANGE_PIO_IDX_MASK, PIO_PULLUP);
+	pio_pull_up(CHANGE_PIO, CHANGE_PIO_IDX_MASK, 1);
+	
+	//Inicializa PA0 como saída
+	pio_set_output(GREEN_PIO, GREEN_PIO_IDX_MASK, 0, 0, 0);
+	
+	//Inicializa PB0 como saída
+	pio_set_output(BLUE_PIO, BLUE_PIO_IDX_MASK, 0, 0, 0);
+}
+
 void buzz(long frequency, long length) {
 	
 	long delayValue = 1000000 / frequency / 2; // calculate the delay value between transitions
@@ -223,41 +278,127 @@ void buzz(long frequency, long length) {
 int main(void)
 {
   init();
-
+  int pause_flag = 0;
+  int note_paused = 0;
+  int note_paused2 = 0;
+  int song = 0;
+  
   // super loop
   // aplicacoes embarcadas não devem sair do while(1).
   while (1)
-  {
-		int size = sizeof(melody) / sizeof(int);
-		for (int note = 0; note < size; note++) {
+  {		
+	    if(!(pio_get(PAUSE_PIO, PIO_INPUT, PAUSE_PIO_IDX_MASK)))
+	    {
+		    while(!(pio_get(PAUSE_PIO, PIO_INPUT, PAUSE_PIO_IDX_MASK)))
+		    {
+			    delay_ms(100);
+		    }
+		    pause_flag = !pause_flag;
+	    }
+		
+		if(!(pio_get(CHANGE_PIO, PIO_INPUT, CHANGE_PIO_IDX_MASK)))
+		{
+			delay_ms(100);
+			if (pio_get(CHANGE_PIO, PIO_INPUT, CHANGE_PIO_IDX_MASK) == 0){
+				song = !song;
+				pause_flag = 0;
+			}
+		}
+		
+		if(pause_flag == 0){
+			if (song == 0){
+				int size = sizeof(melody) / sizeof(int);
+				pio_set(GREEN_PIO, GREEN_PIO_IDX_MASK);
+				for (int note = note_paused; note < size; note++){
+				
+					if(note == size-1){
+						note = 0;
+					}
  
-			// to calculate the note duration, take one second
-			// divided by the note type.
-			//e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-			int noteDuration = 1000 / tempo[note];
+					// to calculate the note duration, take one second
+					// divided by the note type.
+					//e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+					int noteDuration =  1000 / tempo[note];
 			
-// 			int pause_flag = 0;
-// 			if (pio_get (PIOA, PIO_INPUT, PAUSE_PIO_IDX_MASK) == 1){
-// 				pause_flag += 1;
-// 			}
-// 			if(pause_flag % 2 != 0){
-// 				break;
-// 			}
-			if (pio_get (PAUSE_PIO, PIO_INPUT, PAUSE_PIO_IDX_MASK) == 0){
-				buzz(melody[note], noteDuration);
-			}
-			else{
-				break;
-			}
-			// to distinguish the notes, set a minimum time between them.
-			// the note's duration + 30% seems to work well:
-			int pauseBetweenNotes = noteDuration * 1.3;
-			delay_ms(pauseBetweenNotes);
+					buzz(melody[note], noteDuration);
+				
+					if(!(pio_get(PAUSE_PIO, PIO_INPUT, PAUSE_PIO_IDX_MASK))){
+						while(!(pio_get(PAUSE_PIO, PIO_INPUT, PAUSE_PIO_IDX_MASK))){
+							delay_ms(100);
+						}
+						note_paused = note + 1; 
+						pause_flag = 1; 
+						pio_clear(GREEN_PIO, GREEN_PIO_IDX_MASK);
+						break;
+					}
+					
+					if(!(pio_get(CHANGE_PIO, PIO_INPUT, CHANGE_PIO_IDX_MASK)))
+					{
+						delay_ms(100);
+						if (pio_get(CHANGE_PIO, PIO_INPUT, CHANGE_PIO_IDX_MASK) == 0){
+							song = !song;
+							pause_flag = 0;
+							pio_clear(GREEN_PIO, GREEN_PIO_IDX_MASK);
+							break;
+						}
+					}
+				
+					// to distinguish the notes, set a minimum time between them.
+					// the note's duration + 30% seems to work well:
+					int pauseBetweenNotes = noteDuration * 1.3;
+					delay_ms(pauseBetweenNotes);
  
-			// stop the tone playing:
-			buzz(0, noteDuration);
- 
-	  }
+					// stop the tone playing:
+					buzz(0, noteDuration);
+				}
+			}
+		
+			if (song == 1){
+				int size = sizeof(imperial_melody) / sizeof(int);
+				pio_set(BLUE_PIO, BLUE_PIO_IDX_MASK);
+				for (int note = note_paused2; note < size; note++){
+					
+					if(note == size-1){
+						note = 0;
+					}
+					
+					// to calculate the note duration, take one second
+					// divided by the note type.
+					//e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+					int noteDuration = imperial_tempo[note]; // 1000 / imperial_tempo[note];
+					
+					buzz(imperial_melody[note], noteDuration);
+					
+					if(!(pio_get(PAUSE_PIO, PIO_INPUT, PAUSE_PIO_IDX_MASK))){
+						while(!(pio_get(PAUSE_PIO, PIO_INPUT, PAUSE_PIO_IDX_MASK))){
+							delay_ms(100);
+						}
+						note_paused2 = note + 1;
+						pause_flag = 1;
+						pio_clear(BLUE_PIO, BLUE_PIO_IDX_MASK);
+						break;
+					}
+					
+					if(!(pio_get(CHANGE_PIO, PIO_INPUT, CHANGE_PIO_IDX_MASK)))
+					{
+						delay_ms(100);
+						if (pio_get(CHANGE_PIO, PIO_INPUT, CHANGE_PIO_IDX_MASK) == 0){
+							song = 0;
+							pause_flag = 0;
+							pio_clear(BLUE_PIO, BLUE_PIO_IDX_MASK);
+							break;
+						}
+					}
+					
+					// to distinguish the notes, set a minimum time between them.
+					int pauseBetweenNotes = noteDuration * 0.7;
+					delay_ms(pauseBetweenNotes);
+					
+					// stop the tone playing:
+					buzz(0, noteDuration);
+				}
+			}
+		}
 	  
   }
   return 0;
