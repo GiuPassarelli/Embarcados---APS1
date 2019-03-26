@@ -3,8 +3,11 @@
  **  - Giulia Passarelli
  **  - Alessandra Blucher
  ** 
- **  - url vÌdeo
+ **  - url v√≠deo
  **/
+
+//Imperial March: by nicksort @github
+//Mario Theme: by Prince @ princetronics.com
 
 /************************************************************************/
 /* includes                                                             */
@@ -218,7 +221,7 @@ int imperial_tempo[] = {
 
 void init(void);
 
-// FunÁ„o de inicializaÁ„o do uC
+// Fun√ß√£o de inicializa√ß√£o do uC
 void init(void){
 	// Initialize the board clock
 	sysclk_init();
@@ -234,21 +237,21 @@ void init(void){
 	// para que possamos controlar o BUZZER.
 	pmc_enable_periph_clk(BLUE_PIO_ID);
 	
-	//Inicializa PA4 como saÌda
+	//Inicializa PA4 como sa√≠da
 	pio_set_output(BUZZER_PIO, BUZZER_PIO_IDX_MASK, 0, 0, 0);
 	
-	//Inicializa PAUSE como saÌda
+	//Inicializa PAUSE como sa√≠da
 	pio_set_input(PAUSE_PIO, PAUSE_PIO_IDX_MASK, PIO_PULLUP);
 	pio_pull_up(PAUSE_PIO, PAUSE_PIO_IDX_MASK, 1);
 	
-	//Inicializa CHANGE como saÌda
+	//Inicializa CHANGE como sa√≠da
 	pio_set_input(CHANGE_PIO, CHANGE_PIO_IDX_MASK, PIO_PULLUP);
 	pio_pull_up(CHANGE_PIO, CHANGE_PIO_IDX_MASK, 1);
 	
-	//Inicializa PA0 como saÌda
+	//Inicializa PA0 como sa√≠da
 	pio_set_output(GREEN_PIO, GREEN_PIO_IDX_MASK, 0, 0, 0);
 	
-	//Inicializa PB0 como saÌda
+	//Inicializa PB0 como sa√≠da
 	pio_set_output(BLUE_PIO, BLUE_PIO_IDX_MASK, 0, 0, 0);
 }
 
@@ -284,7 +287,7 @@ int main(void)
   int song = 0;
   
   // super loop
-  // aplicacoes embarcadas n„o devem sair do while(1).
+  // aplicacoes embarcadas n√£o devem sair do while(1).
   while (1)
   {		
 	    if(!(pio_get(PAUSE_PIO, PIO_INPUT, PAUSE_PIO_IDX_MASK)))
