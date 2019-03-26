@@ -8,6 +8,7 @@
 
 //Imperial March: by nicksort @github
 //Mario Theme: by Prince @ princetronics.com
+//Buzzer example function by Prince @ princetronics.com
 
 /************************************************************************/
 /* includes                                                             */
